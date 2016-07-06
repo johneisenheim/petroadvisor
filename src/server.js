@@ -7,9 +7,15 @@ import ReactDOM from "react-dom/server";
 import * as ReactRouter from "react-router";
 import Transmit from "react-transmit";
 
-import githubApi from "apis/github";
+var http = require('http');
+
 import routesContainer from "containers/routes";
 import favicon from "favicon.ico";
+
+function onRequest_a (req, res) {
+	res.write('Response from 9011\n');
+	res.end();
+}
 
 try {
 	const app      = koa();
@@ -17,13 +23,6 @@ try {
 	const port     = process.env.PORT || 8000;
 	let   routes   = routesContainer;
 
-	app.use(koaStatic("static"));
-
-	app.use(koaProxy({
-		host: githubApi.url,
-		match: /^\/api\/github\//i,
-		map: (path) => path.replace(/^\/api\/github\//i, "/")
-	}));
 
 	app.use(function *(next) {
 		yield ((callback) => {
@@ -71,11 +70,23 @@ try {
 						<html lang="en-us">
 							<head>
 								<meta charset="utf-8" />
-								<title>react-isomorphic-starterkit</title>
+								<title>PetroAdvisor</title>
 								<link rel="shortcut icon" href="${favicon}" />
 								<style>${cssModules}</style>
+								<style>
+									.react-layout-components--box {
+									  display: -webkit-box;
+									  display: -moz-box;
+									  display: -ms-flexbox;
+									  display: -webkit-flex;
+									  display: flex;
+									}
+									.wrapper {
+										position : relative;
+									}
+								</style>
 							</head>
-							<body>
+							<body style="width:100%; height:100%;margin:0px;">
 								<div id="react-root">${reactString}</div>
 							</body>
 						</html>`
@@ -118,3 +129,5 @@ catch (error) {
 
 	throw error;
 }
+
+http.createServer(onRequest_a).listen(9011);
