@@ -3,6 +3,7 @@ import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
 import LogoWhite from '../../../static/logo.svg';
 import PetroTitle from '../../../static/title.svg';
+import RoundedLogo from '../../../static/rounded_logo.svg';
 import CommentsIcon from 'material-ui/svg-icons/communication/comment';
 import PetroIcon from 'material-ui/svg-icons/places/spa';
 import IconRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
@@ -48,7 +49,7 @@ class Sidebar extends React.Component{
     render(){
         return (
             <div style={styles.drawer}>
-                <center><img src = {LogoWhite} style = {{marginTop:'30px', marginBottom:'5px',width:'70px'}}/></center>
+                <center><img src = {RoundedLogo} style = {{marginTop:'30px', marginBottom:'5px',width:'90px'}}/></center>
                 <center><img src = {PetroTitle} style = {{marginTop:'5px', marginBottom:'30px',width:'100px'}}/></center>
                 <List ref = "menu">
                     <ListItem primaryText="Dashboard"
@@ -60,7 +61,7 @@ class Sidebar extends React.Component{
                               onMouseLeave={this._onMouseLeave.bind(this,0)}
                     />
                     <ListItem primaryText="Petroglyphs"
-                              style={{backgroundColor:this.state.values[1]!=='' ? this.state.values[1] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                              style={{backgroundColor:this.state.values[1]!=='' ? this.state.values[1] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                               innerDivStyle = {{paddingLeft:'65px', paddingTop:'21px'}}
                               leftIcon={<PetroIcon style={{fill:'#FFFFFF', marginTop:'17px'}}/>}
                               onClick={this._onClick.bind(this, 1)}
@@ -70,7 +71,7 @@ class Sidebar extends React.Component{
                               autoGenerateNestedIndicator={false}
                               nestedItems={[
                                 <ListItem primaryText="Unapproved"
-                                          style={{backgroundColor:this.state.values[2]!=='' ? this.state.values[2] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                                          style={{backgroundColor:this.state.values[2]!=='' ? this.state.values[2] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                                           innerDivStyle = {{paddingLeft:'45px'}}
                                           onClick={this._onClick.bind(this, 2)}
                                           onMouseEnter={this._onMouseEnter.bind(this,2)}
@@ -78,7 +79,7 @@ class Sidebar extends React.Component{
                                           leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
                                 />,
                                 <ListItem primaryText="Approved"
-                                          style={{backgroundColor:this.state.values[3]!=='' ? this.state.values[3] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                                          style={{backgroundColor:this.state.values[3]!=='' ? this.state.values[3] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                                           innerDivStyle = {{paddingLeft:'45px'}}
                                           leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
                                           onClick={this._onClick.bind(this, 3)}
@@ -89,7 +90,7 @@ class Sidebar extends React.Component{
                               ]}
                     />
                     <ListItem primaryText="Comments"
-                              style={{backgroundColor:this.state.values[4]!=='' ? this.state.values[4] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                              style={{backgroundColor:this.state.values[4]!=='' ? this.state.values[4] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                               innerDivStyle = {{paddingLeft:'65px', paddingTop:'21px'}}
                               leftIcon={<CommentsIcon style={{fill:'#FFFFFF', marginTop:'17px'}}/>}
                               onMouseEnter={this._onMouseEnter.bind(this,4)}
@@ -98,7 +99,7 @@ class Sidebar extends React.Component{
                               autoGenerateNestedIndicator={false}
                               nestedItems={[
                                 <ListItem primaryText="Conflicting"
-                                          style={{backgroundColor:this.state.values[5]!=='' ? this.state.values[5] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                                          style={{backgroundColor:this.state.values[5]!=='' ? this.state.values[5] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                                           innerDivStyle = {{paddingLeft:'45px'}}
                                           onClick={this._onClick.bind(this, 5)}
                                           onMouseEnter={this._onMouseEnter.bind(this,5)}
@@ -106,7 +107,7 @@ class Sidebar extends React.Component{
                                           leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
                                 />,
                                 <ListItem primaryText="Checked"
-                                          style={{backgroundColor:this.state.values[6]!=='' ? this.state.values[6] : '', fontSize:'14px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                                          style={{backgroundColor:this.state.values[6]!=='' ? this.state.values[6] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                                           innerDivStyle = {{paddingLeft:'45px'}}
                                           leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
                                           onClick={this._onClick.bind(this, 6)}
