@@ -1,6 +1,7 @@
 const styles = {
     drawer : {
-        background: "-webkit-linear-gradient(top, rgba(240,175,96,1) 0%, rgba(240,136,67,1) 100%)",
+        /*background: "-webkit-linear-gradient(-180deg, #F0A95F 0%, #E7AD6E 56%)",*/
+        backgroundColor : '#EDA65C',
         width : "260px"
     },
     containedDrawer : {

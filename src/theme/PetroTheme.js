@@ -1,5 +1,5 @@
 import React from 'react';
-import Colors from 'material-ui/lib/styles/colors';
+import {grey600, grey50, grey300, darkBlack, grey900, white} from 'material-ui/styles/colors';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {fade} from 'material-ui/utils/colorManipulator';
 
@@ -21,14 +21,14 @@ const PetroTheme = getMuiTheme({
     palette: {
         primary1Color: '#e6af4b',
         accent1Color: '#f6752e',
-        textColor: Colors.grey600,
-        alternateTextColor: Colors.grey50,
-        canvasColor: Colors.white,
-        borderColor: Colors.grey300,
-        disabledColor: fade(Colors.darkBlack, 0.3),
+        textColor: grey600,
+        alternateTextColor: grey50,
+        canvasColor: white,
+        borderColor: grey300,
+        disabledColor: fade(darkBlack, 0.3),
         pickerHeaderColor: '#e6984b',
         clockCircleColor: fade('#E6E7EB', 0.07),
-        shadowColor: Colors.grey900,
+        shadowColor: grey900
     },
 },{
     userAgent : false

@@ -67,7 +67,7 @@ const lightBaseTheme = getMuiTheme({
     },
     fontFamily: 'Roboto, sans-serif',
     palette: {
-        primary1Color: '#e8e8e8',
+        primary1Color: '#EBE9E6',
         primary2Color: lightBlue200,
         primary3Color: lightBlue300,
         accent1Color: '#59C2E6',

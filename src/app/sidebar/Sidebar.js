@@ -1,7 +1,7 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import {List, ListItem} from 'material-ui/List';
-import LogoWhite from '../../../static/logo.svg';
+import LogoWhite from '../../../static/aLogo.svg';
 import PetroTitle from '../../../static/title.svg';
 import RoundedLogo from '../../../static/rounded_logo.svg';
 import CommentsIcon from 'material-ui/svg-icons/communication/comment';
@@ -15,6 +15,8 @@ import DrawerStore from '../../stores/DrawerStore';
 import actions from '../../actions/actions.js';
 import {Link} from "react-router";
 
+
+import Person from './Person';
 
 
 class Sidebar extends React.Component{
@@ -49,9 +51,8 @@ class Sidebar extends React.Component{
     render(){
         return (
             <div style={styles.drawer}>
-                <center><img src = {RoundedLogo} style = {{marginTop:'30px', marginBottom:'5px',width:'90px'}}/></center>
-                <center><img src = {PetroTitle} style = {{marginTop:'5px', marginBottom:'30px',width:'100px'}}/></center>
-                <List ref = "menu">
+                <Person />
+                <List ref = "menu" style={{marginTop:'0px', paddingTop:'0px'}}>
                     <ListItem primaryText="Dashboard"
                               style={{backgroundColor:this.state.values[0]!=='' ? this.state.values[0] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                               innerDivStyle = {{paddingLeft:'65px', paddingTop:'21px'}}
