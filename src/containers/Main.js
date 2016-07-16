@@ -8,12 +8,14 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Login from '../login/Login';
 import App from '../app/App';
 
-//injectTapEventPlugin();
+injectTapEventPlugin();
 
 /**
  * Main React application entry-point for both the server and client.
  */
 class Main extends React.Component {
+
+
 	constructor(props, context){
 		super(props,context);
 	}
@@ -35,7 +37,7 @@ class Main extends React.Component {
 	 */
 	render () {
         return(
-            <App {...this.props}/>
+            <App {...this.props} />
         );
 	}
 }

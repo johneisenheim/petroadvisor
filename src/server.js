@@ -7,22 +7,30 @@ import ReactDOM from "react-dom/server";
 import * as ReactRouter from "react-router";
 import Transmit from "react-transmit";
 
-var http = require('http');
+import http from 'http';
+import express from 'express';
+
+import actions from './actions/actions';
 
 import routesContainer from "containers/routes";
 import favicon from "favicon.ico";
 
+
+
 function onRequest_a (req, res) {
+	actions.notify();
 	res.write('Response from 9011\n');
 	res.end();
 }
+
+let expressApp = express();
+
 
 try {
 	const app      = koa();
 	const hostname = process.env.HOSTNAME || "localhost";
 	const port     = process.env.PORT || 8000;
 	let   routes   = routesContainer;
-
 
 	app.use(function *(next) {
 		yield ((callback) => {
@@ -101,6 +109,7 @@ try {
 				});
 			});
 		});
+
 	});
 
 	app.listen(port, () => {
@@ -130,4 +139,26 @@ catch (error) {
 	throw error;
 }
 
-http.createServer(onRequest_a).listen(9011);
+expressApp.post('/', function(req, res){
+	console.log('here in server.');
+	actions.notify();
+	res.end();
+});
+http.createServer(expressApp).listen('9011', function(){
+	console.log('second server is listening');
+});
+/*var io = require('socket.io').listen(server);
+var	socket = require('socket-io-server');
+
+socket.init(server);
+
+expressApp.get('/cane', function(req, res){
+	socket.emitAll('emit-clients', {
+		data: []
+	});
+	res.end();
+});
+
+expressApp.listen('9011', function (){
+	console.log('Express server listening on port');
+});*/

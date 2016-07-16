@@ -18,7 +18,7 @@ class App extends React.Component{
     render(){
         return (
             <MuiThemeProvider muiTheme={PetroTheme}>
-                <Box flow style={{height:"100vh", overflowX:'hidden', backgroundColor:'#f3f3f2'}}>
+                <Box style={{height:"100vh", overflowX:'hidden', backgroundColor:'#f3f3f2'}}>
                     <Sidebar/>
                     <RightContent>
                         <div id="pre" style={{width:'100%', height:'100%'}}>

@@ -5,8 +5,6 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-import Call from 'material-ui/svg-icons/communication/call';
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 //import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
@@ -19,9 +17,7 @@ import {
 } from 'material-ui/styles/colors';
 import {fade} from 'material-ui/utils/colorManipulator';
 
-import Divider from 'material-ui/Divider';
-
-//const darkMuiTheme = getMuiTheme(darkBaseTheme);
+import Bell from './Bell';
 
 
 class NavBar extends React.Component{
@@ -33,17 +29,8 @@ class NavBar extends React.Component{
                     title=""
                     showMenuIconButton = {false}
                     iconElementRight={
-            <IconMenu
-              iconButtonElement={
-                <IconButton><MoreVertIcon /></IconButton>
-              }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem primaryText="Credits" style={{color:'#666666'}}/>
-              <MenuItem primaryText="Logout" style={{color:'#666666'}}/>
-            </IconMenu>
-          }
+                            <IconButton><Bell/></IconButton>
+                          }
 
                 />
             </MuiThemeProvider>
@@ -68,12 +55,12 @@ const lightBaseTheme = getMuiTheme({
     fontFamily: 'Roboto, sans-serif',
     palette: {
         primary1Color: '#EBE9E6',
-        primary2Color: lightBlue200,
-        primary3Color: lightBlue300,
-        accent1Color: '#59C2E6',
-        accent2Color: grey100,
-        accent3Color: grey500,
-        textColor: blue700,
+        primary2Color: '#e6af4b',
+        primary3Color: '#e6af4b',
+        accent1Color: '#e6af4b',
+        accent2Color: '#e6af4b',
+        accent3Color: '#e6af4b',
+        textColor: '#666666',
         alternateTextColor: '#666666',
         canvasColor: white,
         borderColor: grey300,
