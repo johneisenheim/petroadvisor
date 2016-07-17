@@ -3,7 +3,7 @@ import actions from '../actions/actions.js';
 
 var DrawerStore = flux.createStore({
     items : {
-        values : ['','','','','','','','']
+        values : ['','','','','']
     },
     actions: [
         actions.selectMenuItem,
@@ -11,7 +11,7 @@ var DrawerStore = flux.createStore({
         actions.dehoverMenuItem
     ],
     selectMenuItem : function(what){
-        for ( var i = 0; i < 8; i++ ){
+        for ( var i = 0; i < 5; i++ ){
             if( i == parseInt(what)){
                 this.items.values[i] = 'rgba(246, 117, 45, 0.65)';
             }else{

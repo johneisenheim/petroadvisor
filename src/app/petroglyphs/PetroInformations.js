@@ -22,12 +22,14 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Link} from "react-router";
 
 
+
 class PetroInformations extends React.Component{
     constructor(props, context){
         super(props, context);
         console.log(props);
         this.state = {
-           results : []
+           results : [],
+            loading : false
         };
     }
 
@@ -41,6 +43,11 @@ class PetroInformations extends React.Component{
     }
 
     onApproveClick(){
+        this.setState({
+            results : this.state.results,
+            loading : true
+        });
+
         $.get('http://petroadvisor-archeo.rhcloud.com/approvePhoto', {photo_id : this.props.params.petroid}, function(data){
             let parsed = JSON.parse(data);
             if(parsed.affectedRows > 0)
@@ -67,42 +74,75 @@ class PetroInformations extends React.Component{
             let buttons = [];
             switch(this.state.results[0].visible){
                 case 0:
-                    buttons.push(
-                        <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
-                            <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Pending</span></p>
-                            <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
-                                <FlatButton label="Go back"/>
-                            </Link>
-                            <FlatButton label="Unapprove Petroglyph" style={{color:'#C44231'}} onClick={this.onUnapproveClick.bind(this)}/>
-                            <RaisedButton label="Approve Petroglyph" primary={true} style={{backgroundColor:'#EDA65C'}} onClick={this.onApproveClick.bind(this)}/>
-                        </div>
-                    );
+                    if(this.state.loading){
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p><span style={{fontWeight:'bold'}}>Wait...</span></p>
+                                <CircularProgress size={0.5} innerStyle={{marginTop:'10px'}}/>
+                            </div>
+                        );
+                    }else{
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Pending</span></p>
+                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
+                                    <FlatButton label="Go back"/>
+                                </Link>
+                                <FlatButton label="Unapprove Petroglyph" style={{color:'#C44231'}} onClick={this.onUnapproveClick.bind(this)}/>
+                                <RaisedButton label="Approve Petroglyph" ref="raised" primary={true} style={{backgroundColor:'#EDA65C'}} onClick={this.onApproveClick.bind(this)}/>
+                            </div>
+                        );
+                    }
                     break;
                 case 1:
-                    buttons.push(
-                        <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
-                            <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Approved</span></p>
-                            <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
-                                <FlatButton label="Go back"/>
-                            </Link>
-                            <RaisedButton label="Unapprove Petroglyph" backgroundColor='#C44231' labelColor='#FFFFFF' onClick={this.onUnapproveClick.bind(this)}/>
-                        </div>
-                    );
+                    if(this.state.loading){
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p><span style={{fontWeight:'bold'}}>Wait...</span></p>
+                                <CircularProgress size={0.5} innerStyle={{marginTop:'10px'}}/>
+                            </div>
+                        );
+                    }else {
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Approved</span></p>
+                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}}
+                                      activeStyle={{color: 'white'}}>
+                                    <FlatButton label="Go back"/>
+                                </Link>
+                                <RaisedButton label="Unapprove Petroglyph" ref="raised" backgroundColor='#C44231'
+                                              labelColor='#FFFFFF' onClick={this.onUnapproveClick.bind(this)}/>
+                            </div>
+                        );
+                    }
                     break;
                 case -1:
-                    buttons.push(
-                        <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
-                            <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Unapproved</span></p>
-                            <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
-                                <FlatButton label="Go back"/>
-                            </Link>
-                            <RaisedButton label="Approve Petroglyph" primary={true} style={{backgroundColor:'#EDA65C'}} onClick={this.onApproveClick.bind(this)}/>
-                        </div>
-                    );
+                    if(this.state.loading){
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p><span style={{fontWeight:'bold'}}>Wait...</span></p>
+                                <CircularProgress size={0.5} innerStyle={{marginTop:'10px'}}/>
+                            </div>
+                        );
+                    }else {
+                        buttons.push(
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Unapproved</span></p>
+                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}}
+                                      activeStyle={{color: 'white'}}>
+                                    <FlatButton label="Go back"/>
+                                </Link>
+                                <RaisedButton label="Approve Petroglyph" ref="raised" primary={true}
+                                              style={{backgroundColor:'#EDA65C'}}
+                                              onClick={this.onApproveClick.bind(this)}/>
+                            </div>
+                        );
+                    }
                     break;
+
             }
             var avatarSrc = "http://petroadvisor-archeo.rhcloud.com/profilePictures/"+this.state.results[0].petroglyph_account_nick+'.png';
-            var photoSrc = "http://petroadvisor-archeo.rhcloud.com/"+this.state.results[0].url;
+            var photoSrc = "http://petroadvisor-archeo.rhcloud.com"+this.state.results[0].url;
             var cardHeaderTitle = this.state.results[0].petroglyph_account_nick;
             var cardHeaderSubtitle = "Photo ID: "+this.state.results[0].id;
             var ratingRender = [];
@@ -124,7 +164,17 @@ class PetroInformations extends React.Component{
                         />
                         <CardMedia
                         >
-                            <center><a href={photoSrc} target="_blank"><img src={photoSrc} style={{minWidth:'30%', maxWidth:'30%',}}/></a></center>
+                            <div>
+                                <center><Paper style={{width:'200px', height : '200px', minWidth:'200px', maxWidth:'200px'}} zDepth={2} rounded={false} >
+                                    <div style={{backgroundImage:'url('+photoSrc+')', width:'200px', minWidth:'200px', height:'200px', backgroundSize:'cover', backgroundPosition:'center center', backgroundRepeat:'no-repeat', marginBottom:'20px', marginTop:'20px'}}></div>
+                                </Paper>
+                                    <RaisedButton label="Show full image" primary={true}
+                                                  style={{backgroundColor:'#EDA65C', width:'auto', minWidth:'100px', marginTop:'20px'}}/>
+                                </center>
+                            </div>
+
+
+
                         </CardMedia>
                         <CardTitle title={this.state.results[0].title} subtitle="" />
                         <CardText>

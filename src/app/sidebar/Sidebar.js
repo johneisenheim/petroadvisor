@@ -86,70 +86,28 @@ class Sidebar extends React.Component{
                               onMouseLeave={this._onMouseLeave.bind(this,1)}
                               initiallyOpen={true}
                               autoGenerateNestedIndicator={false}
-                              nestedItems={[
-                                <ListItem primaryText="Unapproved"
-                                          key={2}
-                                          style={{backgroundColor:this.state.values[2]!=='' ? this.state.values[2] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
-                                          innerDivStyle = {{paddingLeft:'45px'}}
-                                          onClick={this._onClick.bind(this, 2)}
-                                          onMouseEnter={this._onMouseEnter.bind(this,2)}
-                                          onMouseLeave={this._onMouseLeave.bind(this,2)}
-                                          leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
-                                />,
-                                <ListItem primaryText="Approved"
-                                          key={3}
-                                          style={{backgroundColor:this.state.values[3]!=='' ? this.state.values[3] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
-                                          innerDivStyle = {{paddingLeft:'45px'}}
-                                          leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
-                                          onClick={this._onClick.bind(this, 3)}
-                                          onMouseEnter={this._onMouseEnter.bind(this,3)}
-                                          onMouseLeave={this._onMouseLeave.bind(this,3)}
-
-                                />
-                              ]}
                     />
                     </Link>
                     <ListItem primaryText="Comments"
-                              key={4}
-                              style={{backgroundColor:this.state.values[4]!=='' ? this.state.values[4] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                              key={2}
+                              style={{backgroundColor:this.state.values[2]!=='' ? this.state.values[2] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                               innerDivStyle = {{paddingLeft:'65px', paddingTop:'21px'}}
                               leftIcon={<CommentsIcon style={{fill:'#FFFFFF', marginTop:'17px'}}/>}
-                              onMouseEnter={this._onMouseEnter.bind(this,4)}
-                              onMouseLeave={this._onMouseLeave.bind(this,4)}
-                              onClick={this._onClick.bind(this, 4)}
+                              onMouseEnter={this._onMouseEnter.bind(this,2)}
+                              onMouseLeave={this._onMouseLeave.bind(this,2)}
+                              onClick={this._onClick.bind(this, 2)}
                               initiallyOpen={true}
                               autoGenerateNestedIndicator={false}
-                              nestedItems={[
-                                <ListItem primaryText="Conflicting"
-                                          key={5}
-                                          style={{backgroundColor:this.state.values[5]!=='' ? this.state.values[5] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
-                                          innerDivStyle = {{paddingLeft:'45px'}}
-                                          onClick={this._onClick.bind(this, 5)}
-                                          onMouseEnter={this._onMouseEnter.bind(this,5)}
-                                          onMouseLeave={this._onMouseLeave.bind(this,5)}
-                                          leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
-                                />,
-                                <ListItem primaryText="Checked"
-                                          key={6}
-                                          style={{backgroundColor:this.state.values[6]!=='' ? this.state.values[6] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
-                                          innerDivStyle = {{paddingLeft:'45px'}}
-                                          leftIcon={<IconRight style={{fill:'#FFFFFF', marginTop:'11px'}}/>}
-                                          onClick={this._onClick.bind(this, 6)}
-                                          onMouseEnter={this._onMouseEnter.bind(this,6)}
-                                          onMouseLeave={this._onMouseLeave.bind(this,6)}
-
-                                />
-                              ]}
                     />
                     <Link to="/classes" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
                     <ListItem primaryText="Classes"
-                              key={7}
-                              style={{backgroundColor:this.state.values[7]!=='' ? this.state.values[7] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
+                              key={3}
+                              style={{backgroundColor:this.state.values[3]!=='' ? this.state.values[3] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
                               innerDivStyle = {{paddingLeft:'65px', paddingTop:'21px'}}
                               leftIcon={<Classes style={{fill:'#FFFFFF', marginTop:'17px'}}/>}
-                              onMouseEnter={this._onMouseEnter.bind(this,7)}
-                              onMouseLeave={this._onMouseLeave.bind(this,7)}
-                              onClick={this._onClick.bind(this, 7)}
+                              onMouseEnter={this._onMouseEnter.bind(this,3)}
+                              onMouseLeave={this._onMouseLeave.bind(this,3)}
+                              onClick={this._onClick.bind(this, 3)}
                               initiallyOpen={true}
                               autoGenerateNestedIndicator={false}
                     />

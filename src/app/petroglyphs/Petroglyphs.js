@@ -27,6 +27,8 @@ import fetch from 'node-fetch';
 import $ from 'jquery';
 import Box from 'react-layout-components';
 import {Link} from "react-router";
+import DropDownMenu from 'material-ui/DropDownMenu';
+
 
 import styles from './Petroglyphs.css';
 
@@ -37,10 +39,12 @@ class Petroglyphs extends React.Component{
         super(props, context);
         this.state = {
             results : [],
-            limit : 20,
+            limit : 10,
             offset : 0,
             pageNum : 0,
-            total : 0
+            total : 0,
+            dropValue: 0,
+            loading : true
         };
     }
 
@@ -50,7 +54,7 @@ class Petroglyphs extends React.Component{
             console.log(data);
             let parsed = JSON.parse(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 20, offset : 0});
+            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
         }.bind(self));
     }
 
@@ -59,16 +63,19 @@ class Petroglyphs extends React.Component{
         $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
             var parsed = JSON.parse(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            this.setState({data: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset});
+            this.setState({results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
         }.bind(this));
     }
 
     onRightArrowClick(){
         let newOffset = (this.state.offset + 10);
+        console.log(newOffset)
         $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
+            console.log('hello')
             var parsed = JSON.parse(data);
+            console.log(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            this.setState({data: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset});
+            this.setState({results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
         }.bind(this));
     }
 
@@ -79,14 +86,50 @@ class Petroglyphs extends React.Component{
             console.log(data);
             let parsed = JSON.parse(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 20, offset : 0});
+            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
         }.bind(self));
+    }
+
+    _handleChange(e, value){
+        let self = this;
+        let status = 0;
+        console.log(value);
+        switch(value){
+            case 0:
+                $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs', {limit : this.state.limit, offset : this.state.offset}, function(data){
+                    console.log(data);
+                    let parsed = JSON.parse(data);
+                    var total = parsed[0].total[0]["COUNT(*)"];
+                    self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:0, loading:false});
+                }.bind(self));
+                break;
+            case 1:
+                status = 1;
+                break;
+            case 2:
+                status = -1;
+                break;
+            case 3:
+                status = 0;
+                break;
+        }
+        $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphsStatus', {limit : this.state.limit, offset : this.state.offset, status: status}, function(data){
+            console.log(data);
+            let parsed = JSON.parse(data);
+            var total = parsed[0].total[0]["COUNT(*)"];
+            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:value, loading:false});
+        }.bind(self));
+    }
+
+    _handleTouchTap(address){
+        console.log(address);
+        this.props.history.push(address);
     }
 
     //1 approvato, 0 in pending, -1 non approvato
 
     render (){
-        if(this.state.results.length == 0){
+        if(this.state.loading){
             return(
                 <Box justifyContent="center" alignItems="center" style={{height:'100px'}}>
                     <CircularProgress size={0.7}/>
@@ -95,23 +138,35 @@ class Petroglyphs extends React.Component{
         }else{
             let tableContent = [];
             let url = 'http://petroadvisor-archeo.rhcloud.com/';
-            for(var i = 0; i < this.state.results.length; i++ ){
-                let routerAddress = '/petroglyphs/'+this.state.results[i].id;
-                console.log(routerAddress);
-                tableContent[i] =
+            if( this.state.results.length == 0 ){
+                tableContent.push(
                     <TableRow>
-                        <TableRowColumn style={{width:'30px'}}><Avatar src={url+this.state.results[i].url}/></TableRowColumn>
-                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].title}</TableRowColumn>
-                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].description}</TableRowColumn>
-                        <TableRowColumn><span style={this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? {color:"#5F9950"} : {color:'black'}) : {color:"#C44231"}}>{this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? 'Approved' : 'Pending') : 'Unapproved'}</span></TableRowColumn>
-                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].petroglyph_account_nick}</TableRowColumn>
-                        <TableRowColumn>
-                            <Link to={routerAddress} style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
-                                <IconButton><Eye/></IconButton>
-                            </Link>
-                        </TableRowColumn>
+                        <TableRowColumn style={{width:'30px'}}></TableRowColumn>
+                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}></TableRowColumn>
+                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}></TableRowColumn>
+                        <TableRowColumn><p>No results found!</p></TableRowColumn>
+                        <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}></TableRowColumn>
+                        <TableRowColumn></TableRowColumn>
                     </TableRow>
-                ;
+                );
+            }else{
+                for(var i = 0; i < this.state.results.length; i++ ){
+                    let routerAddress = '/petroglyphs/'+this.state.results[i].id;
+                    tableContent[i] =
+                        <TableRow>
+                            <TableRowColumn style={{width:'30px'}}><Avatar src={url+this.state.results[i].url}/></TableRowColumn>
+                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].title}</TableRowColumn>
+                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].description}</TableRowColumn>
+                            <TableRowColumn><span style={this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? {color:"#5F9950"} : {color:'black'}) : {color:"#C44231"}}>{this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? 'Approved' : 'Pending') : 'Unapproved'}</span></TableRowColumn>
+                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].petroglyph_account_nick}</TableRowColumn>
+                            <TableRowColumn>
+
+                                    <IconButton onTouchTap={this._handleTouchTap.bind(this, routerAddress)}><Eye /></IconButton>
+
+                            </TableRowColumn>
+                        </TableRow>
+                    ;
+                }
             }
 
             return (
@@ -135,13 +190,23 @@ class Petroglyphs extends React.Component{
                                         <MenuItem value="3" primaryText="Nickname" />
                                         <MenuItem value="4" primaryText="Status" />
                                     </IconMenu>
-                                    <Search color={'#FFFFFF'} style={{marginTop:'14px', width:'25px', height: '25px', marginRight:'10px', marginLeft:'20px'}}/>
+                                    <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
+                                    <span style={{marginTop:'18px', color:'#FFFFFF', marginLeft:'15px', fontWeight:'bold'}}>Status: </span>
+                                    <DropDownMenu value={this.state.dropValue} onChange={this._handleChange.bind(this)} style={{width:'150px', marginRight:'0px'}} labelStyle={{color:'#FFFFFF'}} underlineStyle={{backgroundColor:'#FFFFFF'}} iconStyle={{fill:'#FFFFFF'}} autoWidth={false}>
+                                        <MenuItem value={0} primaryText="All" />
+                                        <MenuItem value={1} primaryText="Approved" />
+                                        <MenuItem value={2} primaryText="Unapproved" />
+                                        <MenuItem value={3} primaryText="Pending" />
+                                    </DropDownMenu>
+                                    <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)', marginLeft:'0px'}}/>
+                                    <Search color={'#FFFFFF'} style={{marginTop:'15px', width:'25px', height: '25px', marginRight:'0px', marginLeft:'10px'}}/>
                                     <TextField
-                                        hintText="Cerca"
+                                        hintText="Search"
                                         hintStyle = {styles.searchHintStyle}
                                         inputStyle = {styles.searchInputStyle}
                                         underlineFocusStyle = {styles.searchUnderlineFocusStyle}
                                         id={'search'}
+                                        style={{marginLeft:'5px'}}
                                     />
                                 </ToolbarGroup>
                             </ToolbarGroup>
@@ -163,10 +228,10 @@ class Petroglyphs extends React.Component{
                             <TableFooter>
                                 <TableRow>
                                     <TableRowColumn style={styles.footerContent}>
-                                        <IconButton disabled={this.state.offset === 0} onClick={this.onLeftArrowClick}>
+                                        <IconButton disabled={this.state.offset === 0} onTouchTap={this.onLeftArrowClick.bind(this)}>
                                             <ChevronLeft/>
                                         </IconButton>
-                                        <IconButton disabled={this.state.offset + this.state.limit >= this.state.total} onClick={this.onRightArrowClick}>
+                                        <IconButton disabled={this.state.offset + this.state.limit >= this.state.total} onTouchTap={this.onRightArrowClick.bind(this)}>
                                             <ChevronRight />
                                         </IconButton>
                                     </TableRowColumn>

@@ -92,6 +92,31 @@ try {
 									.wrapper {
 										position : relative;
 									}
+									.blur-filter {
+									  	filter: blur(5px);
+										-webkit-filter: blur(10px);
+										-moz-filter: blur(10px);
+										-o-filter: blur(10px);
+										-ms-filter: blur(10px);
+										margin: -5px -10px -10px -5px;
+									}
+									#no-blur-filter {
+									  	filter: none;
+										-webkit-filter: blur(0px);
+										-moz-filter: blur(0px);
+										-o-filter: blur(0px);
+										-ms-filter: blur(0px);
+
+									}
+									.resize-image{
+										width: 200px;
+										height: 200px;
+										background-size: cover;
+										background-position: center center;
+										background-repeat: no-repeat;
+										margin-bottom: 20px;
+
+									}
 								</style>
 							</head>
 							<body style="width:100%; height:100%;margin:0px;">

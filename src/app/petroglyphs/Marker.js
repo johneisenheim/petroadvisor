@@ -1,8 +1,8 @@
 var React = require('react');
 var shouldPureComponentUpdate = require('react-pure-render/function');
 
-const K_WIDTH = 40;
-const K_HEIGHT = 40;
+const K_WIDTH = 15;
+const K_HEIGHT = 15;
 
 const greatPlaceStyle = {
     // initially any map object has left top corner at lat lng coordinates
@@ -27,7 +27,7 @@ var Marker = React.createClass({
     shouldComponentUpdate : shouldPureComponentUpdate,
     render : function() {
         return (
-            <div style={greatPlaceStyle}>P</div>
+            <div style={greatPlaceStyle}></div>
         );
     }
 
