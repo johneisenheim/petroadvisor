@@ -56,10 +56,15 @@ class PetroInformations extends React.Component{
     }
 
     onUnapproveClick(){
+        this.setState({
+            results : this.state.results,
+            loading : true
+        });
+
         $.get('http://petroadvisor-archeo.rhcloud.com/unapprovePhoto', {photo_id : this.props.params.petroid}, function(data){
             let parsed = JSON.parse(data);
             if(parsed.affectedRows > 0)
-                this.context.history.push('/petroglyphs');
+                this.props.history.push('/petroglyphs');
         }.bind(this));
     }
 
@@ -88,8 +93,8 @@ class PetroInformations extends React.Component{
                                 <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
                                     <FlatButton label="Go back"/>
                                 </Link>
-                                <FlatButton label="Unapprove Petroglyph" style={{color:'#C44231'}} onClick={this.onUnapproveClick.bind(this)}/>
-                                <RaisedButton label="Approve Petroglyph" ref="raised" primary={true} style={{backgroundColor:'#EDA65C'}} onClick={this.onApproveClick.bind(this)}/>
+                                <RaisedButton label="Unapprove Petroglyph" backgroundColor='#C44231' labelStyle={{ color:'#FFFFFF'}} style={{marginRight:'20px'}} onClick={this.onUnapproveClick.bind(this)}/>
+                                <RaisedButton label="Approve Petroglyph" backgroundColor='#EDA65C' ref="raised" labelStyle={{ color:'#FFFFFF'}}  onClick={this.onApproveClick.bind(this)}/>
                             </div>
                         );
                     }

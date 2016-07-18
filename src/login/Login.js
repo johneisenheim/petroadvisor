@@ -13,11 +13,40 @@ import svgIcon from '../../static/oo_o.svg';
 
 import PetroTheme from '../theme/PetroTheme.js';
 import styles from './Login.css.js';
+import $ from 'jquery';
+import localStorage from 'localStorage';
 
 class Login extends React.Component{
 
     constructor(props, context) {
         super(props, context);
+        this.state = {
+            loading : false
+        }
+    }
+
+    authMe(){
+        let self = this;
+        $.post('http://petroadvisor-archeo.rhcloud.com/login', {username : this.refs.usernameField.getValue(), password : this.refs.passwordField.getValue()}, function(data){
+            var parsed = JSON.parse(data);
+            console.log(parsed);
+            if( parsed.result == 1 ){
+                localStorage.setItem('petrologin', 1);
+                window.location.reload();
+                this.props.history.push('/');
+            }else{
+
+            }
+        }.bind(self));
+    }
+
+    showItemToLog(){
+        if(!this.state.loading){
+            return <RaisedButton label="Login" primary={true} onTouchTap={this.authMe.bind(this)}
+                                 style={{backgroundColor:'#EDA65C', width:'auto', minWidth:'100px', marginTop:'20px', marginBottom:'20px'}}/>;
+        }else{
+            return <CircularProgress size={0.3}/>;
+        }
     }
 
     render(){
@@ -49,11 +78,15 @@ class Login extends React.Component{
                                     floatingLabelFocusStyle={styles.floatingLabelFocusStyle}
                                     ref = "passwordField"
                                 />
-                                <Checkbox
-                                    label="Ricordami d'ora in poi"
-                                    style = {styles.rememberMe}
-                                    labelStyle = {{marginLeft : "-10px"}}
-                                />
+                                <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"70%"}}>
+                                    <center><Checkbox
+                                        label="Ricordami"
+                                        labelStyle = {{marginLeft : "-50px"}}
+                                        style={{width:'100%'}}
+                                    />
+                                    </center>
+                                </div>
+                                {this.showItemToLog()}
                             </Box>
                         </Paper>
                     </Box>

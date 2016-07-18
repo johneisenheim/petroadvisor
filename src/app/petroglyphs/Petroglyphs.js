@@ -92,7 +92,7 @@ class Petroglyphs extends React.Component{
 
     _handleChange(e, value){
         let self = this;
-        let status = 0;
+        let status = -2;
         console.log(value);
         switch(value){
             case 0:
@@ -113,12 +113,14 @@ class Petroglyphs extends React.Component{
                 status = 0;
                 break;
         }
-        $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphsStatus', {limit : this.state.limit, offset : this.state.offset, status: status}, function(data){
-            console.log(data);
-            let parsed = JSON.parse(data);
-            var total = parsed[0].total[0]["COUNT(*)"];
-            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:value, loading:false});
-        }.bind(self));
+        if( status !== -2 ) {
+            $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphsStatus', {limit : this.state.limit, offset : this.state.offset, status: status}, function(data){
+                console.log(data);
+                let parsed = JSON.parse(data);
+                var total = parsed[0].total[0]["COUNT(*)"];
+                self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:value, loading:false});
+            }.bind(self));
+        }
     }
 
     _handleTouchTap(address){

@@ -29,7 +29,7 @@ class NavBar extends React.Component{
                     title=""
                     showMenuIconButton = {false}
                     iconElementRight={
-                            <IconButton><Bell/></IconButton>
+                            <Bell/>
                           }
 
                 />

@@ -3,7 +3,7 @@ const styles = {
         marginTop : '20px',
         width : 'auto',
         height : 'auto',
-        marginBottom : '30px'
+        paddingBottom : '30px'
     },
     superheader:{
         color: '#FFFFFF',
