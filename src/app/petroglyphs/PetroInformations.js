@@ -14,7 +14,6 @@ import FlatButton from 'material-ui/FlatButton';
 import Divider from 'material-ui/Divider';
 import Rater from './Rater';
 import CircularProgress from 'material-ui/CircularProgress';
-import Box from 'react-layout-components';
 import GoogleMap from 'google-map-react';
 import Marker from './Marker';
 import DiffMarker from './DiffMarker';
@@ -22,6 +21,8 @@ import MapControls from './MapControls';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Link} from "react-router";
 import ClassControl from './ClassControl';
+import { Flex, Box, Grid } from 'reflexbox';
+import actions from '../../actions/actions';
 
 
 class PetroInformations extends React.Component{
@@ -38,6 +39,10 @@ class PetroInformations extends React.Component{
             mapControlResults :'',
             classControlResults : ''
         };
+    }
+
+    componentWillMount(){
+        actions.showBackButton();
     }
 
     componentDidMount(){
@@ -95,9 +100,11 @@ class PetroInformations extends React.Component{
     render(){
         if(this.state.results.length == 0){
             return(
-                <Box justifyContent="center" alignItems="center" style={{height:'100px'}}>
-                    <CircularProgress size={0.7}/>
-                </Box>
+                <Flex align='center' justify="center" flex={true} style={{height:'100vh'}}>
+                    <Box align="center" justify="center" flex={true} column={true}>
+                        <CircularProgress size={0.7}/>
+                    </Box>
+                </Flex>
                 );
         }else{
             let buttons = [];
@@ -114,9 +121,6 @@ class PetroInformations extends React.Component{
                         buttons.push(
                             <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
                                 <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Pending</span></p>
-                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
-                                    <FlatButton label="Go back"/>
-                                </Link>
                                 <RaisedButton label="Unapprove Petroglyph" backgroundColor='#C44231' labelStyle={{ color:'#FFFFFF'}} style={{marginRight:'20px'}} onClick={this.onUnapproveClick.bind(this)}/>
                                 <RaisedButton label="Approve Petroglyph" backgroundColor='#EDA65C' ref="raised" labelStyle={{ color:'#FFFFFF'}}  onClick={this.onApproveClick.bind(this)}/>
                             </div>
@@ -135,10 +139,6 @@ class PetroInformations extends React.Component{
                         buttons.push(
                             <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
                                 <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Approved</span></p>
-                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}}
-                                      activeStyle={{color: 'white'}}>
-                                    <FlatButton label="Go back"/>
-                                </Link>
                                 <RaisedButton label="Unapprove Petroglyph" ref="raised" backgroundColor='#C44231'
                                               labelColor='#FFFFFF' onClick={this.onUnapproveClick.bind(this)}/>
                             </div>
@@ -157,10 +157,6 @@ class PetroInformations extends React.Component{
                         buttons.push(
                             <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
                                 <p>Petroglyph status is: <span style={{fontWeight:'bold'}}>Unapproved</span></p>
-                                <Link to="/petroglyphs" style={{color: 'white', textDecoration:'none'}}
-                                      activeStyle={{color: 'white'}}>
-                                    <FlatButton label="Go back"/>
-                                </Link>
                                 <RaisedButton label="Approve Petroglyph" ref="raised" primary={true}
                                               style={{backgroundColor:'#EDA65C'}}
                                               onClick={this.onApproveClick.bind(this)}/>
@@ -175,7 +171,7 @@ class PetroInformations extends React.Component{
             if(this.state.location_cluster.length > 0){
                 for (var i = 0 ; i < this.state.location_cluster.length; i++){
                     markerToRender.push(
-                        <DiffMarker lat={this.state.location_cluster[i].latitude} lng={this.state.location_cluster[i].longitude} text={this.state.location_cluster[i].id}/>
+                        <DiffMarker lat={this.state.location_cluster[i].latitude} key={i} lng={this.state.location_cluster[i].longitude} text={this.state.location_cluster[i].id}/>
                     );
                 }
             }
@@ -200,51 +196,53 @@ class PetroInformations extends React.Component{
             );
             //}
             return(
-
-                    <Paper zDepth={1} style={styles.paper}>
-                        <Card>
-                            <CardHeader
-                                title={cardHeaderTitle}
-                                subtitle={cardHeaderSubtitle}
-                                avatar={avatarSrc}
-                            />
-                            <CardMedia
-                            >
-                                <img src={photoSrc} />
-                            </CardMedia>
-                            <CardTitle title={this.state.results[0].title} subtitle="" />
-                            <CardText>
-                                {this.state.results[0].description}
-                                <Divider style={{marginTop:'30px'}}/>
-                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Rating</h3>
-                                {ratingRender}
-                                <Divider style={{marginTop:'30px'}}/>
-                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Class</h3>
-                                <ClassControl petroClass={this.state.results[0].classes_id} done={this.classControlDone.bind(this)}/>
-                                <Divider style={{marginTop:'30px'}}/>
-                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Petroglyph Location</h3>
-                                <div style={{width:'100%', height:'500px'}}>
-                                    <GoogleMap
-                                        options={{scrollwheel: false}}
-                                        center={[this.state.results[0].latitude,this.state.results[0].longitude]}
-                                        zoom={15}
-                                        scrollwheel={false}
-                                        bootstrapURLKeys={{
-                                        key : 'AIzaSyBvSQsPjuAxbQeMsu4n8XMKtZFP5PPkQHs'
-                                    }}
-                                    >
-                                        <Marker lat={this.state.results[0].latitude} lng={this.state.results[0].longitude}/>
-                                        {markerToRender}
-                                    </GoogleMap>
-                                </div>
-                                <Divider style={{marginTop:'30px'}} />
-                                <MapControls status={this.state.location_cluster} currentLocClust={this.state.results[0].location_cluster_id} done={this.mapControlDone.bind(this)}/>
-                                <Divider style={{marginTop:'30px'}} />
-                                {buttons}
-                            </CardText>
-                        </Card>
-                    </Paper>
-
+                <Flex align="center" justify="center" column={true} style={{overflow:'auto'}}>
+                    <Box align="center" justify="center" pl={2} pr={2} column={true} mt={2} pb={4}>
+                        <Paper zDepth={1} style={styles.paper}>
+                            <Card>
+                                <CardHeader
+                                    title={cardHeaderTitle}
+                                    subtitle={cardHeaderSubtitle}
+                                    avatar={avatarSrc}
+                                />
+                                <CardMedia
+                                >
+                                    <img src={photoSrc} />
+                                </CardMedia>
+                                <CardTitle title={this.state.results[0].title} subtitle="" />
+                                <CardText>
+                                    {this.state.results[0].description}
+                                    <Divider style={{marginTop:'30px'}}/>
+                                    <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Rating</h3>
+                                    {ratingRender}
+                                    <Divider style={{marginTop:'30px'}}/>
+                                    <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Class</h3>
+                                    <ClassControl petroClass={this.state.results[0].classes_id} done={this.classControlDone.bind(this)}/>
+                                    <Divider style={{marginTop:'30px'}}/>
+                                    <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Petroglyph Location</h3>
+                                    <div style={{width:'100%', height:'500px'}}>
+                                        <GoogleMap
+                                            options={{scrollwheel: false}}
+                                            center={[this.state.results[0].latitude,this.state.results[0].longitude]}
+                                            zoom={15}
+                                            scrollwheel={false}
+                                            bootstrapURLKeys={{
+                                            key : 'AIzaSyBvSQsPjuAxbQeMsu4n8XMKtZFP5PPkQHs'
+                                        }}
+                                        >
+                                            <Marker lat={this.state.results[0].latitude} lng={this.state.results[0].longitude}/>
+                                            {markerToRender}
+                                        </GoogleMap>
+                                    </div>
+                                    <Divider style={{marginTop:'30px'}} />
+                                    <MapControls status={this.state.location_cluster} currentLocClust={this.state.results[0].location_cluster_id} done={this.mapControlDone.bind(this)}/>
+                                    <Divider style={{marginTop:'30px'}} />
+                                    {buttons}
+                                </CardText>
+                            </Card>
+                        </Paper>
+                    </Box>
+                </Flex>
             );
         }
     }

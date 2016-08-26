@@ -1,9 +1,10 @@
 const styles = {
     paper : {
-        marginTop : '20px',
         width : 'auto',
         height : 'auto',
-        marginBottom : '35px'
+        backgroundColor:'#EFEFEF',
+        paddingBottom : '40px',
+        boxShadow : 'none'
     },
     superheader:{
         color: '#FFFFFF',

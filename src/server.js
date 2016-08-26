@@ -82,13 +82,7 @@ try {
 								<link rel="shortcut icon" href="${favicon}" />
 								<style>${cssModules}</style>
 								<style>
-									.react-layout-components--box {
-									  display: -webkit-box;
-									  display: -moz-box;
-									  display: -ms-flexbox;
-									  display: -webkit-flex;
-									  display: flex;
-									}
+
 									.wrapper {
 										position : relative;
 									}
@@ -124,7 +118,7 @@ try {
 									}
 								</script>
 							</head>
-							<body style="width:100%; height:100%;margin:0px;">
+							<body style="width:100%; height:100%;margin:0px; overflow:hidden;">
 								<div id="react-root">${reactString}</div>
 							</body>
 						</html>`

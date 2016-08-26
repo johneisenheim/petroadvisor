@@ -2,7 +2,6 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import Box from 'react-layout-components';
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -52,8 +51,8 @@ class Login extends React.Component{
     render(){
         return (
             <MuiThemeProvider muiTheme={PetroTheme}>
-                <Box style={styles.bg} justifyContent="center">
-                    <Box justifyContent="center" alignItems="center">
+                <div style={styles.bg} justifyContent="center">
+                    <div justifyContent="center" alignItems="center">
                         <Paper zDepth={1} >
                             <Box column justifyContent="center" alignItems="center">
                                 <img src={svgIcon} style={{width:'80px', marginTop:'25px'}}/>
@@ -89,8 +88,8 @@ class Login extends React.Component{
                                 {this.showItemToLog()}
                             </Box>
                         </Paper>
-                    </Box>
-                </Box>
+                    </div>
+                </div>
             </MuiThemeProvider>
         )
     }

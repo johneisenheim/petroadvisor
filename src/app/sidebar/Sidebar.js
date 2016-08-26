@@ -44,6 +44,8 @@ class Sidebar extends React.Component{
             actions.selectMenuItem(1);
         }else if(this.props.currentPath.pathname.startsWith('/petroglyphs') && !this.props.currentPath.pathname.endsWith('/petroglyphs')){
             actions.selectMenuItem(1);
+        }else{
+            actions.selectMenuItem(2);
         }
     }
 

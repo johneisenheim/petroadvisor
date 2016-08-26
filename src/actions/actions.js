@@ -9,7 +9,9 @@ const actions = flux.createActions([
     'dehoverMenuItem',
     'toggleCompatibility',
     'addChip',
-    'notify'
+    'notify',
+    'showBackButton',
+    'hideBackButton'
 ]);
 
 export default actions;

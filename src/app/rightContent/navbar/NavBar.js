@@ -4,8 +4,11 @@ import IconButton from 'material-ui/IconButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {Link} from "react-router";
+
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 //import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 
@@ -17,20 +20,55 @@ import {
 } from 'material-ui/styles/colors';
 import {fade} from 'material-ui/utils/colorManipulator';
 
+import NavBarStore from '../../../stores/NavBarStore';
+import actions from '../../../actions/actions';
+
 import Bell from './Bell';
 
 
 class NavBar extends React.Component{
+
+    constructor(props, context){
+        super(props, context);
+        console.log('NavBar props', props);
+        this.state = {
+            buttonVisible : false
+        }
+    }
+
+    componentWillMount(){
+        NavBarStore.on('app.toggleBackButton', this.toggleBackButton.bind(this));
+    }
+
+    componentDidMount(){
+        this.setState({
+            buttonVisible : false
+        })
+    }
+
+    toggleBackButton(){
+        this.setState({
+            buttonVisible : NavBarStore.getButtonVisible()
+        })
+    }
+
+    leftIconTap(){
+        actions.hideBackButton();
+        this.props.nav.goBack();
+    }
 
     render(){
         return(
             <MuiThemeProvider muiTheme={lightBaseTheme}>
                 <AppBar
                     title=""
-                    showMenuIconButton = {false}
+                    showMenuIconButton = {this.state.buttonVisible}
                     iconElementRight={
                             <Bell/>
                           }
+                    iconElementLeft={
+                        <IconButton onTouchTap={this.leftIconTap.bind(this)}><ArrowBack /></IconButton>
+                    }
 
                 />
             </MuiThemeProvider>

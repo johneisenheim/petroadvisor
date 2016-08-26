@@ -25,9 +25,11 @@ import Avatar from 'material-ui/Avatar';
 import CircularProgress from 'material-ui/CircularProgress';
 import fetch from 'node-fetch';
 import $ from 'jquery';
-import Box from 'react-layout-components';
 import {Link} from "react-router";
 import DropDownMenu from 'material-ui/DropDownMenu';
+import { Flex, Box, Grid } from 'reflexbox';
+
+import actions from '../../actions/actions';
 
 
 import styles from './Petroglyphs.css';
@@ -62,26 +64,50 @@ class Petroglyphs extends React.Component{
     }
 
     onLeftArrowClick(){
-        var newOffset = (this.state.offset - 10);
-        $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
-            var parsed = JSON.parse(data);
-            var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
-        }.bind(this));
+        var self = this;
+        if(this.state.searchText == ''){
+            var newOffset = (this.state.offset - 10);
+            $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
+                var parsed = JSON.parse(data);
+                var total = parsed[0].total[0]["COUNT(*)"];
+                this._total = total;
+                this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
+            }.bind(this));
+        }else{
+            var newOffset = (this.state.offset - 10);
+            $.get('http://petroadvisor-archeo.rhcloud.com/searchBarPetro', {field:this.state.searchText, offset: newOffset}, function(data){
+                let parsed = JSON.parse(data);
+                console.log(parsed);
+                var total = parsed.results[0][0]["COUNT(*)"];
+                console.log('TOTAL',total);
+                self.setState({...this.state, results:parsed.results[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : newOffset});
+            }.bind(self));
+        }
     }
 
     onRightArrowClick(){
-        let newOffset = (this.state.offset + 10);
-        console.log(newOffset)
-        $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
-            console.log('hello')
-            var parsed = JSON.parse(data);
-            console.log(data);
-            var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
-        }.bind(this));
+        var self = this;
+        if(this.state.searchText == ''){
+            let newOffset = (this.state.offset + 10);
+            console.log(newOffset)
+            $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
+                console.log('hello')
+                var parsed = JSON.parse(data);
+                console.log(data);
+                var total = parsed[0].total[0]["COUNT(*)"];
+                this._total = total;
+                this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
+            }.bind(this));
+        }else{
+            var newOffset = (this.state.offset + 10);
+            $.get('http://petroadvisor-archeo.rhcloud.com/searchBarPetro', {field:this.state.searchText, offset: newOffset}, function(data){
+                let parsed = JSON.parse(data);
+                console.log(parsed);
+                var total = parsed.results[0][0]["COUNT(*)"];
+                console.log('TOTAL',total);
+                self.setState({...this.state, results:parsed.results[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : newOffset});
+            }.bind(self));
+        }
     }
 
     _onItemTouchTap(e, child){
@@ -132,20 +158,27 @@ class Petroglyphs extends React.Component{
     }
 
     _handleTouchTap(address){
-        console.log(address);
         this.props.history.push(address);
     }
 
     onTextFieldChange(e,value){
         var self = this;
         if(value == ''){
-
+            $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs', {limit : 10, offset : 0}, function(data){
+                console.log(data);
+                let parsed = JSON.parse(data);
+                var total = parsed[0].total[0]["COUNT(*)"];
+                console.log('value is empty and total is ', total);
+                self.setState({...this.state, results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false, searchText:''});
+            }.bind(self));
         }else{
             this.setState({...this.state, searchText : value});
-            $.get('http://petroadvisor-archeo.rhcloud.com/searchBarPetro', {field:value}, function(data){
+            $.get('http://petroadvisor-archeo.rhcloud.com/searchBarPetro', {field:value, offset: 0}, function(data){
                 let parsed = JSON.parse(data);
-                var total = parsed.length;
-                self.setState({...this.state, results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0});
+                console.log(parsed);
+                var total = parsed.results[0][0]["COUNT(*)"];
+                console.log('TOTAL',total);
+                self.setState({...this.state, results:parsed.results[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0});
             }.bind(self));
         }
 
@@ -156,13 +189,17 @@ class Petroglyphs extends React.Component{
     render (){
         if(this.state.loading){
             return(
-                <Box justifyContent="center" alignItems="center" style={{height:'100px'}}>
-                    <CircularProgress size={0.7}/>
-                </Box>
+                <Flex align='center' justify="center" flex={true} style={{height:'100vh'}}>
+                    <Box align="center" justify="center" flex={true} column={true}>
+                        <CircularProgress size={0.7}/>
+                    </Box>
+
+                </Flex>
             );
         }else{
             let tableContent = [];
             let url = 'http://petroadvisor-archeo.rhcloud.com/';
+            console.log(this.state.results);
             if( this.state.results.length == 0 ){
                 tableContent.push(
                     <TableRow>
@@ -175,10 +212,11 @@ class Petroglyphs extends React.Component{
                     </TableRow>
                 );
             }else{
+                console.log('here', this.state.results);
                 for(var i = 0; i < this.state.results.length; i++ ){
                     let routerAddress = '/petroglyphs/'+this.state.results[i].id;
                     tableContent[i] =
-                        <TableRow>
+                        <TableRow key={i}>
                             <TableRowColumn style={{width:'30px'}}><Avatar src={url+this.state.results[i].url}/></TableRowColumn>
                             <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].title}</TableRowColumn>
                             <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].description}</TableRowColumn>
@@ -196,78 +234,82 @@ class Petroglyphs extends React.Component{
 
             return (
                 <MuiThemeProvider muiTheme={lightBaseTheme}>
-                    <Paper zDepth={1} style={styles.paper}>
-                        <Toolbar style={{backgroundColor:'#eea466'}}>
-                            <ToolbarTitle text="Petroglyphs" style={{color:'#FFFFFF', textAlign:'center', fontSize:'16px', fontWeight:'bold'}}/>
-                            <ToolbarGroup>
-                                <FontIcon className="muidocs-icon-custom-sort" />
-                                <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
-                                <ToolbarGroup>
-                                    <IconMenu
-                                        iconButtonElement={<IconButton><Sort /></IconButton>}
-                                        value={1}
-                                        iconStyle={{width:'28px', height:'28px', fill:'#FFFFFF'}}
-                                        style={{marginLeft:'15px'}}
-                                        onItemTouchTap={this._onItemTouchTap.bind(this)}
-                                    >
-                                        <MenuItem value="1" primaryText="Title" />
-                                        <MenuItem value="2" primaryText="Description" />
-                                        <MenuItem value="3" primaryText="Nickname" />
-                                        <MenuItem value="4" primaryText="Status" />
-                                    </IconMenu>
-                                    <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
-                                    <span style={{marginTop:'18px', color:'#FFFFFF', marginLeft:'15px', fontWeight:'bold'}}>Status: </span>
-                                    <DropDownMenu value={this.state.dropValue} onChange={this._handleChange.bind(this)} style={{width:'150px', marginRight:'0px'}} labelStyle={{color:'#FFFFFF'}} underlineStyle={{backgroundColor:'#FFFFFF'}} iconStyle={{fill:'#FFFFFF'}} autoWidth={false}>
-                                        <MenuItem value={0} primaryText="All" />
-                                        <MenuItem value={1} primaryText="Approved" />
-                                        <MenuItem value={2} primaryText="Unapproved" />
-                                        <MenuItem value={3} primaryText="Pending" />
-                                    </DropDownMenu>
-                                    <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)', marginLeft:'0px'}}/>
-                                    <Search color={'#FFFFFF'} style={{marginTop:'15px', width:'25px', height: '25px', marginRight:'0px', marginLeft:'10px'}}/>
-                                    <TextField
-                                        hintText="Search"
-                                        hintStyle = {styles.searchHintStyle}
-                                        inputStyle = {styles.searchInputStyle}
-                                        underlineFocusStyle = {styles.searchUnderlineFocusStyle}
-                                        id={'search'}
-                                        style={{marginLeft:'5px'}}
-                                        onChange={this.onTextFieldChange.bind(this)}
-                                    />
-                                </ToolbarGroup>
-                            </ToolbarGroup>
-                        </Toolbar>
-                        <Table selectable={false}>
-                            <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                                <TableRow>
-                                    <TableHeaderColumn style={{width:'30px', fontSize:'14px', fontWeight:'bold'}}>Preview</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Title</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Description</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Status</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>User</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Actions</TableHeaderColumn>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody displayRowCheckbox={false} selectable={false}>
-                                {tableContent}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableRowColumn style={styles.footerContent}>
-                                        <IconButton disabled={this.state.offset === 0} onTouchTap={this.onLeftArrowClick.bind(this)}>
-                                            <ChevronLeft/>
-                                        </IconButton>
-                                        <IconButton disabled={this.state.offset + this.state.limit >= this.state.total} onTouchTap={this.onRightArrowClick.bind(this)}>
-                                            <ChevronRight />
-                                        </IconButton>
-                                    </TableRowColumn>
-                                    <TableRowColumn style={styles.footerText}>
-                                        {Math.min((this.state.offset + 1), this.state.total) + '-' + Math.min((this.state.offset + this.state.limit), this.state.total) + ' of ' + this.state.total}
-                                    </TableRowColumn>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </Paper>
+                    <Flex align="center" justify="center" column={true}>
+                        <Box align="center" justify="center" pl={2} pr={2} column={true} mt={2}>
+                            <Paper zDepth={1} style={styles.paper}>
+                                <Toolbar style={{backgroundColor:'#eea466'}}>
+                                    <ToolbarTitle text="Petroglyphs" style={{color:'#FFFFFF', textAlign:'center', fontSize:'16px', fontWeight:'bold'}}/>
+                                    <ToolbarGroup>
+                                        <FontIcon className="muidocs-icon-custom-sort" />
+                                        <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
+                                        <ToolbarGroup>
+                                            <IconMenu
+                                                iconButtonElement={<IconButton><Sort /></IconButton>}
+                                                value={1}
+                                                iconStyle={{width:'28px', height:'28px', fill:'#FFFFFF'}}
+                                                style={{marginLeft:'15px'}}
+                                                onItemTouchTap={this._onItemTouchTap.bind(this)}
+                                            >
+                                                <MenuItem value="1" primaryText="Title" />
+                                                <MenuItem value="2" primaryText="Description" />
+                                                <MenuItem value="3" primaryText="Nickname" />
+                                                <MenuItem value="4" primaryText="Status" />
+                                            </IconMenu>
+                                            <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
+                                            <span style={{marginTop:'18px', color:'#FFFFFF', marginLeft:'15px', fontWeight:'bold'}}>Status: </span>
+                                            <DropDownMenu value={this.state.dropValue} onChange={this._handleChange.bind(this)} style={{width:'150px', marginRight:'0px'}} labelStyle={{color:'#FFFFFF'}} underlineStyle={{backgroundColor:'#FFFFFF'}} iconStyle={{fill:'#FFFFFF'}} autoWidth={false}>
+                                                <MenuItem value={0} primaryText="All" />
+                                                <MenuItem value={1} primaryText="Approved" />
+                                                <MenuItem value={2} primaryText="Unapproved" />
+                                                <MenuItem value={3} primaryText="Pending" />
+                                            </DropDownMenu>
+                                            <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)', marginLeft:'0px'}}/>
+                                            <Search color={'#FFFFFF'} style={{marginTop:'15px', width:'25px', height: '25px', marginRight:'0px', marginLeft:'10px'}}/>
+                                            <TextField
+                                                hintText="Search"
+                                                hintStyle = {styles.searchHintStyle}
+                                                inputStyle = {styles.searchInputStyle}
+                                                underlineFocusStyle = {styles.searchUnderlineFocusStyle}
+                                                id={'search'}
+                                                style={{marginLeft:'5px'}}
+                                                onChange={this.onTextFieldChange.bind(this)}
+                                            />
+                                        </ToolbarGroup>
+                                    </ToolbarGroup>
+                                </Toolbar>
+                                <Table selectable={false}>
+                                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                                        <TableRow>
+                                            <TableHeaderColumn style={{width:'30px', fontSize:'14px', fontWeight:'bold'}}>Preview</TableHeaderColumn>
+                                            <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Title</TableHeaderColumn>
+                                            <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Description</TableHeaderColumn>
+                                            <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Status</TableHeaderColumn>
+                                            <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>User</TableHeaderColumn>
+                                            <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Actions</TableHeaderColumn>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody displayRowCheckbox={false} selectable={false}>
+                                        {tableContent}
+                                    </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TableRowColumn style={styles.footerContent}>
+                                                <IconButton disabled={this.state.offset === 0} onTouchTap={this.onLeftArrowClick.bind(this)}>
+                                                    <ChevronLeft/>
+                                                </IconButton>
+                                                <IconButton disabled={this.state.offset + this.state.limit >= this.state.total} onTouchTap={this.onRightArrowClick.bind(this)}>
+                                                    <ChevronRight />
+                                                </IconButton>
+                                            </TableRowColumn>
+                                            <TableRowColumn style={styles.footerText}>
+                                                {Math.min((this.state.offset + 1), this.state.total) + '-' + Math.min((this.state.offset + this.state.limit), this.state.total) + ' of ' + this.state.total}
+                                            </TableRowColumn>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            </Paper>
+                        </Box>
+                    </Flex>
                 </MuiThemeProvider>
             );
         }

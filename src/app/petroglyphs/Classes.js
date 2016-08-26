@@ -10,7 +10,6 @@ import {fade} from 'material-ui/utils/colorManipulator';
 import styles from './Classes.css';
 import $ from 'jquery';
 import CircularProgress from 'material-ui/CircularProgress';
-import Box from 'react-layout-components';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
@@ -20,6 +19,7 @@ import Attach from 'material-ui/svg-icons/editor/attach-file';
 import FlatButton from 'material-ui/FlatButton';
 import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
+import { Flex, Box, Grid } from 'reflexbox';
 
 
 class PetroInformations extends React.Component{
@@ -154,60 +154,64 @@ class PetroInformations extends React.Component{
     render(){
         if(this.state.results.length == 0){
             return(
-                <Box justifyContent="center" alignItems="center" style={{height:'100px'}}>
-                    <CircularProgress size={0.7}/>
-                </Box>
+                <Flex align='center' justify="center" flex={true} style={{height:'100vh'}}>
+                    <Box align="center" justify="center" flex={true} column={true}>
+                        <CircularProgress size={0.7}/>
+                    </Box>
+                </Flex>
             );
         }else{
             let menuItems = [];
             for(var i = 0; i < this.state.results.length; i++ ){
                 let avatarSrc = 'http://petroadvisor-archeo.rhcloud.com/classes/'+this.state.results[i].id+'.png';
                 menuItems.push(
-                    <ListItem primaryText={this.state.results[i].title} leftAvatar={<Avatar src={avatarSrc} />}/>
+                    <ListItem primaryText={this.state.results[i].title} key={i} leftAvatar={<Avatar src={avatarSrc} />}/>
                 );
             }
             return(
-                <div>
-                    <Paper zDepth={1} style={styles.paper}>
-                        <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
-                            <p>Here you can create new petroglyph's classes to be mobile users able to recognize the pictograph they are visiting.</p>
-                        </div>
-                        <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                <Flex align="center" justify="center" column={true} style={{overflow:'auto'}}>
+                    <Box align="center" justify="center" pl={2} pr={2} column={true} mt={2} pb={4} mb={4}>
+                        <Paper zDepth={1} style={styles.paper}>
                             <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
-                                <span>Add a new Class:</span>
-                                <TextField
-                                    hintText="Enter a new petroglyph's class"
-                                    hintStyle = {styles.searchHintStyle}
-                                    inputStyle = {styles.searchInputStyle}
-                                    underlineFocusStyle = {styles.searchUnderlineFocusStyle}
-                                    id={'newClass'}
-                                    style={{marginLeft:'20px'}}
-                                    ref="class"
-                                    value={this.state.textValue}
-                                    onChange={this._onHandleChange.bind(this)}
-                                    errorText={this.state.errorText === 'false' ? '' : 'This field is required!'}
-                                />
-                                <FlatButton label="UPLOAD IMAGE" icon={<Attach />} style={{marginLeft:'10px',marginRight:'10px'}}>
-                                    <input type="file" style={stylez.inputFile} onChange={this._onChangeFile.bind(this)}/>
-                                </FlatButton>
-                                {this.state.loading ? <CircularProgress size={0.4}/> : <RaisedButton label="Add Class" ref="raised" backgroundColor='#EDA65C' labelColor='#FFFFFF' style={{marginLeft:'20px'}} onClick={this.addClass.bind(this)}/>}
-
+                                <p>Here you can create new petroglyph's classes to be mobile users able to recognize the pictograph they are visiting.</p>
                             </div>
-                            <center><List style={{width:'50%',marginTop:'30px', marginBottom:'30px'}}>
-                                <Subheader>Petroglyph's Classes</Subheader>
-                                {menuItems}
-                            </List></center>
-                        </div>
-                    </Paper>
-                    <Snackbar
-                        open={this.state.open}
-                        message="Class added successfully!"
-                        autoHideDuration={3000}
-                        style={{fontFamily:'Roboto', color:'#FFFFFF', fontSize:'15px', textAlign:'center'}}
-                        bodyStyle={{backgroundColor:'#F0A95F'}}
-                        onRequestClose={this._onRequestClose.bind(this)}
-                    />
-                </div>
+                            <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                <div style={{display:"inline-block",marginTop :"30px",textAlign:"center", width:"100%"}}>
+                                    <span>Add a new Class:</span>
+                                    <TextField
+                                        hintText="Enter a new petroglyph's class"
+                                        hintStyle = {styles.searchHintStyle}
+                                        inputStyle = {styles.searchInputStyle}
+                                        underlineFocusStyle = {styles.searchUnderlineFocusStyle}
+                                        id={'newClass'}
+                                        style={{marginLeft:'20px'}}
+                                        ref="class"
+                                        value={this.state.textValue}
+                                        onChange={this._onHandleChange.bind(this)}
+                                        errorText={this.state.errorText === 'false' ? '' : 'This field is required!'}
+                                    />
+                                    <FlatButton label="UPLOAD IMAGE" icon={<Attach />} style={{marginLeft:'10px',marginRight:'10px'}}>
+                                        <input type="file" style={stylez.inputFile} onChange={this._onChangeFile.bind(this)}/>
+                                    </FlatButton>
+                                    {this.state.loading ? <CircularProgress size={0.4}/> : <RaisedButton label="Add Class" ref="raised" backgroundColor='#EDA65C' labelColor='#FFFFFF' style={{marginLeft:'20px'}} onClick={this.addClass.bind(this)}/>}
+
+                                </div>
+                                <center><List style={{width:'50%',marginTop:'30px', marginBottom:'30px'}}>
+                                    <Subheader>Petroglyph's Classes</Subheader>
+                                    {menuItems}
+                                </List></center>
+                            </div>
+                        </Paper>
+                        <Snackbar
+                            open={this.state.open}
+                            message="Class added successfully!"
+                            autoHideDuration={3000}
+                            style={{fontFamily:'Roboto', color:'#FFFFFF', fontSize:'15px', textAlign:'center'}}
+                            bodyStyle={{backgroundColor:'#F0A95F'}}
+                            onRequestClose={this._onRequestClose.bind(this)}
+                        />
+                    </Box>
+                </Flex>
             );
         }
     }

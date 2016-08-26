@@ -1,6 +1,5 @@
 const styles = {
     paper : {
-        marginTop : '20px',
         width : 'auto',
         height : 'auto'
     },
