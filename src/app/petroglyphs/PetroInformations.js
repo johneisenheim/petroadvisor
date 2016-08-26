@@ -17,10 +17,11 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Box from 'react-layout-components';
 import GoogleMap from 'google-map-react';
 import Marker from './Marker';
+import DiffMarker from './DiffMarker';
 import MapControls from './MapControls';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Link} from "react-router";
-
+import ClassControl from './ClassControl';
 
 
 class PetroInformations extends React.Component{
@@ -28,31 +29,54 @@ class PetroInformations extends React.Component{
         super(props, context);
         console.log(props);
         this.state = {
-           results : [],
-            loading : false
+            results : [],
+            loading : false,
+            location_cluster : []
+        };
+
+        this.myDictionary = {
+            mapControlResults :'',
+            classControlResults : ''
         };
     }
 
     componentDidMount(){
         let self = this;
+        let parsed1 = null;
         $.get('http://petroadvisor-archeo.rhcloud.com/petroInformations', {photo_id : this.props.params.petroid}, function(data){
             console.log(data);
+            parsed1 = JSON.parse(data);
+            self.setState({results:parsed1});
+        }.bind(self));
+
+        $.post('http://petroadvisor-archeo.rhcloud.com/getAllLocationCluster', function(data){
+            console.log(data);
             let parsed = JSON.parse(data);
-            self.setState({results:parsed});
+            self.setState({location_cluster:parsed});
         }.bind(self));
     }
 
     onApproveClick(){
         this.setState({
-            results : this.state.results,
+            ...this.state,
             loading : true
         });
 
-        $.get('http://petroadvisor-archeo.rhcloud.com/approvePhoto', {photo_id : this.props.params.petroid}, function(data){
+        $.get('http://petroadvisor-archeo.rhcloud.com/approvePhoto', {photo_id : this.props.params.petroid, location_cluster: this.myDictionary.mapControlResults, class_id: this.myDictionary.classControlResults.id}, function(data){
             let parsed = JSON.parse(data);
             if(parsed.affectedRows > 0)
                 this.props.history.push('/petroglyphs');
         }.bind(this));
+    }
+
+    classControlDone(value){
+        console.log('classControlDone', value);
+        this.myDictionary.classControlResults = value;
+    }
+
+    mapControlDone(value){
+        console.log('mapControlDone', value);
+        this.myDictionary.mapControlResults = value;
     }
 
     onUnapproveClick(){
@@ -146,69 +170,81 @@ class PetroInformations extends React.Component{
                     break;
 
             }
-            var avatarSrc = "http://petroadvisor-archeo.rhcloud.com/profilePictures/"+this.state.results[0].petroglyph_account_nick+'.png';
+
+            let markerToRender = [];
+            if(this.state.location_cluster.length > 0){
+                for (var i = 0 ; i < this.state.location_cluster.length; i++){
+                    markerToRender.push(
+                        <DiffMarker lat={this.state.location_cluster[i].latitude} lng={this.state.location_cluster[i].longitude} text={this.state.location_cluster[i].id}/>
+                    );
+                }
+            }
+            console.log(this.state.results[0]);
+            var avatarSrc = "http://petroadvisor-archeo.rhcloud.com/profilePictures/"+this.state.results[0].nickname+'.png';
             var photoSrc = "http://petroadvisor-archeo.rhcloud.com"+this.state.results[0].url;
-            var cardHeaderTitle = this.state.results[0].petroglyph_account_nick;
+            var cardHeaderTitle = this.state.results[0].nickname;
             var cardHeaderSubtitle = "Photo ID: "+this.state.results[0].id;
             var ratingRender = [];
-            for (var i = 0; i < this.state.results.length; i++ ){
-                ratingRender.push(
-                    <div>
-                        <p>Rating for <span style={{fontStyle:'italic'}}>{this.state.results[i].description_it}</span>:</p>
-                        <Rater rate={this.state.results[i].rate} />
-                    </div>
-                );
-            }
+            //for (var i = 0; i < this.state.results.length; i++ ){
+            ratingRender.push(
+                <div>
+                    <p>Rating for <span style={{fontStyle:'italic'}}>visibility</span>:</p>
+                    <Rater rate={this.state.results[0].vis_rate} />
+                </div>
+            );
+            ratingRender.push(
+                <div>
+                    <p>Rating for <span style={{fontStyle:'italic'}}>reachability</span>:</p>
+                    <Rater rate={this.state.results[0].reach_rate} />
+                </div>
+            );
+            //}
             return(
-                <Paper zDepth={1} style={styles.paper}>
-                    <Card>
-                        <CardHeader
-                            title={cardHeaderTitle}
-                            subtitle={cardHeaderSubtitle}
-                            avatar={avatarSrc}
-                        />
-                        <CardMedia
-                        >
-                            <div>
-                                <center><Paper style={{width:'200px', height : '200px', minWidth:'200px', maxWidth:'200px'}} zDepth={2} rounded={false} >
-                                    <div style={{backgroundImage:'url('+photoSrc+')', width:'200px', minWidth:'200px', height:'200px', backgroundSize:'cover', backgroundPosition:'center center', backgroundRepeat:'no-repeat', marginBottom:'20px', marginTop:'20px'}}></div>
-                                </Paper>
-                                    <RaisedButton label="Show full image" primary={true}
-                                                  style={{backgroundColor:'#EDA65C', width:'auto', minWidth:'100px', marginTop:'20px'}}/>
-                                </center>
-                            </div>
 
-
-
-                        </CardMedia>
-                        <CardTitle title={this.state.results[0].title} subtitle="" />
-                        <CardText>
-                            {this.state.results[0].description}
-                            <Divider style={{marginTop:'30px'}}/>
-                            <h3 style={{color:'black', marginTop:'30px'}}>Rating</h3>
-                            {ratingRender}
-                            <Divider style={{marginTop:'30px'}}/>
-                            <h3 style={{color:'black', marginTop:'30px'}}>Petroglyph Location</h3>
-                            <div style={{width:'100%', height:'500px'}}>
-                                <GoogleMap
-                                    options={{scrollwheel: false}}
-                                    center={[this.state.results[0].latitude,this.state.results[0].longitude]}
-                                    zoom={15}
-                                    scrollwheel={false}
-                                    bootstrapURLKeys={{
+                    <Paper zDepth={1} style={styles.paper}>
+                        <Card>
+                            <CardHeader
+                                title={cardHeaderTitle}
+                                subtitle={cardHeaderSubtitle}
+                                avatar={avatarSrc}
+                            />
+                            <CardMedia
+                            >
+                                <img src={photoSrc} />
+                            </CardMedia>
+                            <CardTitle title={this.state.results[0].title} subtitle="" />
+                            <CardText>
+                                {this.state.results[0].description}
+                                <Divider style={{marginTop:'30px'}}/>
+                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Rating</h3>
+                                {ratingRender}
+                                <Divider style={{marginTop:'30px'}}/>
+                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Class</h3>
+                                <ClassControl petroClass={this.state.results[0].classes_id} done={this.classControlDone.bind(this)}/>
+                                <Divider style={{marginTop:'30px'}}/>
+                                <h3 style={{color:'#5C5C5C', marginTop:'30px'}}>Petroglyph Location</h3>
+                                <div style={{width:'100%', height:'500px'}}>
+                                    <GoogleMap
+                                        options={{scrollwheel: false}}
+                                        center={[this.state.results[0].latitude,this.state.results[0].longitude]}
+                                        zoom={15}
+                                        scrollwheel={false}
+                                        bootstrapURLKeys={{
                                         key : 'AIzaSyBvSQsPjuAxbQeMsu4n8XMKtZFP5PPkQHs'
                                     }}
-                                >
-                                    <Marker lat={this.state.results[0].latitude} lng={this.state.results[0].longitude}/>
-                                </GoogleMap>
-                            </div>
-                            <Divider style={{marginTop:'30px'}} />
-                            <MapControls />
-                            <Divider style={{marginTop:'30px'}} />
-                            {buttons}
-                        </CardText>
-                    </Card>
-                </Paper>
+                                    >
+                                        <Marker lat={this.state.results[0].latitude} lng={this.state.results[0].longitude}/>
+                                        {markerToRender}
+                                    </GoogleMap>
+                                </div>
+                                <Divider style={{marginTop:'30px'}} />
+                                <MapControls status={this.state.location_cluster} currentLocClust={this.state.results[0].location_cluster_id} done={this.mapControlDone.bind(this)}/>
+                                <Divider style={{marginTop:'30px'}} />
+                                {buttons}
+                            </CardText>
+                        </Card>
+                    </Paper>
+
             );
         }
     }
@@ -236,7 +272,7 @@ const lightBaseTheme = getMuiTheme({
         accent1Color: '#EDA65C',
         accent2Color: '#e6af4b',
         accent3Color: '#e6af4b',
-        textColor: '#666666',
+        textColor: '#5C5C5C',
         alternateTextColor: '#666666',
         canvasColor: white,
         borderColor: grey300,

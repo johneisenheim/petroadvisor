@@ -118,6 +118,11 @@ try {
 
 									}
 								</style>
+								<script>
+									window.onbeforeunload = function(evt){
+										localStorage.setItem("sidebarIndex", 0);
+									}
+								</script>
 							</head>
 							<body style="width:100%; height:100%;margin:0px;">
 								<div id="react-root">${reactString}</div>

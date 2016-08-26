@@ -36,9 +36,14 @@ class Sidebar extends React.Component{
     }
 
     componentDidMount(){
-        let sidebarIndex = localStorage.getItem('sidebarIndex');
-        if(sidebarIndex !== null){
-            actions.selectMenuItem(sidebarIndex);
+        if(this.props.currentPath.pathname === '/'){
+            actions.selectMenuItem(0);
+        }else if(this.props.currentPath.pathname === '/classes'){
+            actions.selectMenuItem(3);
+        }else if(this.props.currentPath.pathname.startsWith('/petroglyphs') && this.props.currentPath.pathname.endsWith('/petroglyphs')){
+            actions.selectMenuItem(1);
+        }else if(this.props.currentPath.pathname.startsWith('/petroglyphs') && !this.props.currentPath.pathname.endsWith('/petroglyphs')){
+            actions.selectMenuItem(1);
         }
     }
 
@@ -88,6 +93,7 @@ class Sidebar extends React.Component{
                               autoGenerateNestedIndicator={false}
                     />
                     </Link>
+                    <Link to="/comments" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
                     <ListItem primaryText="Comments"
                               key={2}
                               style={{backgroundColor:this.state.values[2]!=='' ? this.state.values[2] : '', fontSize:'15px', fontWeight:'500', height:'60px', color:'#FFFFFF'}}
@@ -99,6 +105,7 @@ class Sidebar extends React.Component{
                               initiallyOpen={true}
                               autoGenerateNestedIndicator={false}
                     />
+                    </Link>
                     <Link to="/classes" style={{color: 'white', textDecoration:'none'}} activeStyle={{color: 'white'}}>
                     <ListItem primaryText="Classes"
                               key={3}

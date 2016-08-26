@@ -55,6 +55,7 @@
     "koa-socket": "^4.4.0",
     "koa-static": "2.0.0",
     "koa.io": "0.0.3",
+    "literallycanvas": "^0.4.14",
     "localStorage": "^1.0.3",
     "material-ui": "^0.15.1",
     "node-fetch": "^1.5.3",
@@ -78,7 +79,8 @@
     "socket.io": "^1.4.8",
     "socket.io-client": "^1.4.8",
     "style-loader": "0.13.0",
-    "websocket": "^1.0.23"
+    "websocket": "^1.0.23",
+    "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
     "babel": "6.5.2",

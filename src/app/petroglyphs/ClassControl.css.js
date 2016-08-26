@@ -3,7 +3,7 @@ const styles = {
         marginTop : '20px',
         width : 'auto',
         height : 'auto',
-        marginBottom : '35px'
+        marginBottom : '30px'
     },
     superheader:{
         color: '#FFFFFF',
@@ -12,13 +12,13 @@ const styles = {
         fontSize : '15px'
     },
     searchHintStyle : {
-        color : '#FFFFFF'
+        color : '#EDA65C'
     },
     searchInputStyle : {
-        color : '#FFFFFF'
+        color : '#757575'
     },
     searchUnderlineFocusStyle : {
-        borderColor:'#FFFFFF'
+        borderColor:'#EDA65C'
     },
     footerContent: {
         float: 'right'

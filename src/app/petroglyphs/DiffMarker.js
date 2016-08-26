@@ -1,8 +1,8 @@
 var React = require('react');
 var shouldPureComponentUpdate = require('react-pure-render/function');
 
-const K_WIDTH = 40;
-const K_HEIGHT = 40;
+const K_WIDTH = 20;
+const K_HEIGHT = 20;
 
 const greatPlaceStyle = {
     // initially any map object has left top corner at lat lng coordinates
@@ -13,24 +13,24 @@ const greatPlaceStyle = {
     left: -K_WIDTH / 2,
     top: -K_HEIGHT / 2,
 
-    border: '5px solid #f6752e',
+    border: '5px solid blue',
     borderRadius: K_HEIGHT,
     backgroundColor: 'white',
     textAlign: 'center',
-    color: '#f6752e',
+    color: 'blue',
     fontSize: 16,
     fontWeight: 'bold',
     padding: 4
 };
 
-var Marker = React.createClass({
+var DiffMarker = React.createClass({
     shouldComponentUpdate : shouldPureComponentUpdate,
     render : function() {
         return (
-            <div style={greatPlaceStyle}></div>
+            <div style={greatPlaceStyle}>{this.props.text}</div>
         );
     }
 
 });
 
-module.exports = Marker;
+module.exports = DiffMarker;

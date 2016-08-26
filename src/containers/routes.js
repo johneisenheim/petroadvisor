@@ -6,7 +6,7 @@ import Home from '../app/home/Home';
 import Petroglyphs from '../app/petroglyphs/Petroglyphs';
 import PetroInformations from '../app/petroglyphs/PetroInformations';
 import Classes from '../app/petroglyphs/Classes';
-import localStorage from 'localStorage';
+import Comments from '../app/comments/Comments';
 
 /**
  * The React Router routes for both the server and the client.
@@ -18,6 +18,7 @@ module.exports = (
         <Route path="/" component={Main}>
             <IndexRoute component={Home} />
             <Route path="petroglyphs" component={Petroglyphs} />
+            <Route path="comments" component={Comments} />
             <Route path="petroglyphs/:petroid" component={PetroInformations} />
             <Route path="classes" component={Classes} />
         </Route>

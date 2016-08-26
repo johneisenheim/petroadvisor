@@ -2,8 +2,7 @@ const styles = {
     paper : {
         marginTop : '20px',
         width : 'auto',
-        height : 'auto',
-        marginBottom : '35px'
+        height : 'auto'
     },
     superheader:{
         color: '#FFFFFF',

@@ -9,7 +9,7 @@ class RightContent extends React.Component{
         return (
             <div id="b" style={{backgroundColor:"#EFEFEF", width:"100%"}}>
                 <NavBar />
-                <Box id="gatto" style={{height:'89vh'}}>
+                <Box id="gatto" style={{height:'91vh', maxHeight:'100vh', overflow:'auto'}}>
                     <div style={{width:'100%', marginLeft : '15px', marginRight:'15px', height : '100%', backgroundColor:'#EFEFEF'}}>
                         {this.props.children}
                     </div>

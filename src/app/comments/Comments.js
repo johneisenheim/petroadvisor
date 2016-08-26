@@ -29,15 +29,12 @@ import Box from 'react-layout-components';
 import {Link} from "react-router";
 import DropDownMenu from 'material-ui/DropDownMenu';
 
+import styles from './Comments.css';
 
-import styles from './Petroglyphs.css';
 
-
-class Petroglyphs extends React.Component{
-
-    constructor(props, context) {
-        super(props, context);
-        this._total = 0;
+export default class Comments extends React.Component{
+    constructor(props){
+        super(props);
         this.state = {
             results : [],
             limit : 10,
@@ -45,19 +42,18 @@ class Petroglyphs extends React.Component{
             pageNum : 0,
             total : 0,
             dropValue: 0,
-            loading : true,
-            searchText : ''
+            loading : true
         };
     }
 
     componentDidMount(){
         let self = this;
-        $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs', {limit : this.state.limit, offset : this.state.offset}, function(data){
+        $.get('http://petroadvisor-archeo.rhcloud.com/getPhotoByComments', {offset : this.state.offset}, function(data){
             console.log(data);
             let parsed = JSON.parse(data);
-            var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            self.setState({...this.state,results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
+            console.log(parsed);
+            var total = parsed[0];
+            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
         }.bind(self));
     }
 
@@ -66,8 +62,7 @@ class Petroglyphs extends React.Component{
         $.get('http://petroadvisor-archeo.rhcloud.com/fetchPetroglyphs',{ limit: 10, offset: newOffset }, function(data){
             var parsed = JSON.parse(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
+            this.setState({results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
         }.bind(this));
     }
 
@@ -79,8 +74,7 @@ class Petroglyphs extends React.Component{
             var parsed = JSON.parse(data);
             console.log(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            this.setState({...this.state,results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
+            this.setState({results: parsed[1], pageNum: Math.ceil(total / 10), total: total, offset:newOffset, loading:false});
         }.bind(this));
     }
 
@@ -91,8 +85,7 @@ class Petroglyphs extends React.Component{
             console.log(data);
             let parsed = JSON.parse(data);
             var total = parsed[0].total[0]["COUNT(*)"];
-            this._total = total;
-            self.setState({...this.state,results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
+            self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, loading:false});
         }.bind(self));
     }
 
@@ -106,8 +99,7 @@ class Petroglyphs extends React.Component{
                     console.log(data);
                     let parsed = JSON.parse(data);
                     var total = parsed[0].total[0]["COUNT(*)"];
-                    this._total = total;
-                    self.setState({...this.state,results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:0, loading:false});
+                    self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:0, loading:false});
                 }.bind(self));
                 break;
             case 1:
@@ -125,8 +117,7 @@ class Petroglyphs extends React.Component{
                 console.log(data);
                 let parsed = JSON.parse(data);
                 var total = parsed[0].total[0]["COUNT(*)"];
-                this._total = total;
-                self.setState({...this.state,results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:value, loading:false});
+                self.setState({results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0, dropValue:value, loading:false});
             }.bind(self));
         }
     }
@@ -136,24 +127,7 @@ class Petroglyphs extends React.Component{
         this.props.history.push(address);
     }
 
-    onTextFieldChange(e,value){
-        var self = this;
-        if(value == ''){
-
-        }else{
-            this.setState({...this.state, searchText : value});
-            $.get('http://petroadvisor-archeo.rhcloud.com/searchBarPetro', {field:value}, function(data){
-                let parsed = JSON.parse(data);
-                var total = parsed.length;
-                self.setState({...this.state, results:parsed[1], pageNum: Math.ceil(total / 10), total: total, limit : 10, offset : 0});
-            }.bind(self));
-        }
-
-    }
-
-    //1 approvato, 0 in pending, -1 non approvato
-
-    render (){
+    render(){
         if(this.state.loading){
             return(
                 <Box justifyContent="center" alignItems="center" style={{height:'100px'}}>
@@ -179,26 +153,24 @@ class Petroglyphs extends React.Component{
                     let routerAddress = '/petroglyphs/'+this.state.results[i].id;
                     tableContent[i] =
                         <TableRow>
-                            <TableRowColumn style={{width:'30px'}}><Avatar src={url+this.state.results[i].url}/></TableRowColumn>
-                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].title}</TableRowColumn>
-                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].description}</TableRowColumn>
+                            <TableRowColumn style={{width:'30px'}}><Avatar src={url+'/petroglyphs/'+this.state.results[i].photo_id+'.jpg'}/></TableRowColumn>
+                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].account_nickname}</TableRowColumn>
+                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].text}</TableRowColumn>
                             <TableRowColumn><span style={this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? {color:"#5F9950"} : {color:'black'}) : {color:"#C44231"}}>{this.state.results[i].visible >= 0 ? (this.state.results[i].visible ? 'Approved' : 'Pending') : 'Unapproved'}</span></TableRowColumn>
-                            <TableRowColumn style={{whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{this.state.results[i].nickname}</TableRowColumn>
                             <TableRowColumn>
 
-                                    <IconButton onTouchTap={this._handleTouchTap.bind(this, routerAddress)}><Eye /></IconButton>
+                                <IconButton onTouchTap={this._handleTouchTap.bind(this, routerAddress)}><Eye /></IconButton>
 
                             </TableRowColumn>
                         </TableRow>
                     ;
                 }
             }
-
             return (
                 <MuiThemeProvider muiTheme={lightBaseTheme}>
                     <Paper zDepth={1} style={styles.paper}>
                         <Toolbar style={{backgroundColor:'#eea466'}}>
-                            <ToolbarTitle text="Petroglyphs" style={{color:'#FFFFFF', textAlign:'center', fontSize:'16px', fontWeight:'bold'}}/>
+                            <ToolbarTitle text="Comments" style={{color:'#FFFFFF', textAlign:'center', fontSize:'16px', fontWeight:'bold'}}/>
                             <ToolbarGroup>
                                 <FontIcon className="muidocs-icon-custom-sort" />
                                 <ToolbarSeparator style={{backgroundColor:'rgba(255,255,255,0.4)'}}/>
@@ -232,7 +204,6 @@ class Petroglyphs extends React.Component{
                                         underlineFocusStyle = {styles.searchUnderlineFocusStyle}
                                         id={'search'}
                                         style={{marginLeft:'5px'}}
-                                        onChange={this.onTextFieldChange.bind(this)}
                                     />
                                 </ToolbarGroup>
                             </ToolbarGroup>
@@ -242,9 +213,8 @@ class Petroglyphs extends React.Component{
                                 <TableRow>
                                     <TableHeaderColumn style={{width:'30px', fontSize:'14px', fontWeight:'bold'}}>Preview</TableHeaderColumn>
                                     <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Title</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Description</TableHeaderColumn>
-                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Status</TableHeaderColumn>
                                     <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>User</TableHeaderColumn>
+                                    <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Status</TableHeaderColumn>
                                     <TableHeaderColumn style={{fontSize:'14px', fontWeight:'bold'}}>Actions</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
@@ -271,8 +241,6 @@ class Petroglyphs extends React.Component{
                 </MuiThemeProvider>
             );
         }
-        /*console.log(this.state);
-        */
     }
 }
 
@@ -310,5 +278,3 @@ const lightBaseTheme = getMuiTheme({
 },{
     userAgent : false
 });
-
-export default Petroglyphs;
